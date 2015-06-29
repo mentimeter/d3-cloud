@@ -2,7 +2,11 @@
 // Algorithm due to Jonathan Feinberg, http://static.mrfeinberg.com/bv_ch03.pdf
 (function() {
 
-if (typeof define === "function" && define.amd) define(["d3"], cloud);
+if (typeof exports === "object") {
+  cloud(require('d3'))
+  module.exports = d3.layout.cloud;
+}
+else if (typeof define === "function" && define.amd) define(["d3"], cloud);
 else cloud(this.d3);
 
 function cloud(d3) {
@@ -20,6 +24,7 @@ function cloud(d3) {
         timeInterval = Infinity,
         event = d3.dispatch("word", "end"),
         timer = null,
+        overflow = false,
         random = Math.random,
         cloud = {};
 
@@ -100,7 +105,11 @@ function cloud(d3) {
         tag.y = startY + dy;
 
         if (tag.x + tag.x0 < 0 || tag.y + tag.y0 < 0 ||
-            tag.x + tag.x1 > size[0] || tag.y + tag.y1 > size[1]) continue;
+            tag.x + tag.x1 > size[0] || tag.y + tag.y1 > size[1]) {
+            if (!overflow) {
+              continue;
+            }
+          }
         // TODO only check for collisions within current bounds.
         if (!bounds || !cloudCollide(tag, board, size[0])) {
           if (!bounds || collideRects(tag, bounds)) {
@@ -174,6 +183,12 @@ function cloud(d3) {
 
     cloud.random = function(_) {
       return arguments.length ? (random = _, cloud) : random;
+    };
+
+    cloud.overflow = function(x) {
+      if (!arguments.length) return overflow;
+      overflow = d3.functor(x);
+      return cloud;
     };
 
     return d3.rebind(cloud, event, "on");
