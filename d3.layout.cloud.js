@@ -2,7 +2,11 @@
 // Algorithm due to Jonathan Feinberg, http://static.mrfeinberg.com/bv_ch03.pdf
 (function() {
 
-if (typeof define === "function" && define.amd) define(["d3"], cloud);
+if (typeof exports === "object") {
+  cloud(require('d3'))
+  module.exports = d3.layout.cloud;
+}
+else if (typeof define === "function" && define.amd) define(["d3"], cloud);
 else cloud(this.d3);
 
 function cloud(d3) {
