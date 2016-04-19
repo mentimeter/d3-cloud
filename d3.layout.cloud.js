@@ -1,9 +1,9 @@
 // Word cloud layout by Jason Davies, http://www.jasondavies.com/word-cloud/
 // Algorithm due to Jonathan Feinberg, http://static.mrfeinberg.com/bv_ch03.pdf
 (function() {
-
+var d3 = require('d3');
 if (typeof exports === "object") {
-  cloud(require('d3'))
+  cloud(d3)
   module.exports = d3.layout.cloud;
 }
 else if (typeof define === "function" && define.amd) define(["d3"], cloud);
